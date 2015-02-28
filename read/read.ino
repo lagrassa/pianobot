@@ -1,15 +1,38 @@
-int incomingTime = 0;   // for incoming serial data
+#include <Servo.h>
 
-void setup() {
-        Serial.begin(9600);     // opens serial port, sets data rate to 9600 bps
+#include <Wire.h>
+
+Servo fSharp;
+void setup()
+{
+  Wire.begin(6);                // join i2c bus with address #4
+  Wire.onReceive(receiveEvent); // register event
+  Serial.begin(9600);           // start serial for output
+  pinMode(13, OUTPUT);
+  fSharp.attach(9);
+  }
+
+void loop()
+{
+  delay(100);
 }
 
-void loop() {
-
-        // send data only when you receive data:
-        if (Serial.available() > 0) {
-                // read the incoming byte:
-                incomingTime = Serial.read();
-        }
+// function that executes whenever data is received from master
+// this function is registered as an event, see setup()
+void receiveEvent(int howMany)
+{
+  while(1 < Wire.available()) // loop through all but the last
+  {
+    char c = Wire.read(); // receive byte as a character
+    Serial.print(c);         // print the character
+  }
+  int x = Wire.read();    // receive byte as an integer
+  Serial.println(x);         // print the integer
+  if (x % 20 < 10) {
+    digitalWrite(13,HIGH);
+    fSharp.write(70);
+  } else {
+    digitalWrite(13,LOW);
+    fSharp.write(45);
+  }
 }
- 
