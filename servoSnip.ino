@@ -50,7 +50,7 @@ void keypressRight(){
 
 void loop(){
   currentTime = Wire.read(); // gives time
-  if(currentTime > nextTimeRight && curentTime > nextTimeLeft){
+  if(currentTime > nextTimeRight && currentTime > nextTimeLeft){
     keypressLeft();
     keypressRight();
   }else if(currentTime > nextTimeRight){
